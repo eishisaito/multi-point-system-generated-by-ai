@@ -1,81 +1,74 @@
-// Service Workerの登録
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-      navigator.serviceWorker.register('/multi-point-system-generated-by-ai/service-worker.js')
-          .then(function(registration) {
-              console.log('ServiceWorker registration successful with scope: ', registration.scope);
-          }, function(err) {
-              console.log('ServiceWorker registration failed: ', err);
-          });
-  });
-}
-
 document.addEventListener('DOMContentLoaded', function() {
-  const openingScreen = document.getElementById('opening-screen');
+  const nameInputScreen = document.getElementById('name-input-screen');
   const gameScreen = document.getElementById('game-screen');
   const playerForm = document.getElementById('player-form');
-  const player1NameInput = document.getElementById('player1-name');
-  const player2NameInput = document.getElementById('player2-name');
-  const player1Display = document.getElementById('player1-display');
-  const player2Display = document.getElementById('player2-display');
+  const player1Input = document.getElementById('player1-input');
+  const player2Input = document.getElementById('player2-input');
+  const player1Name = document.getElementById('player1-name');
+  const player2Name = document.getElementById('player2-name');
+  const counter1 = document.getElementById('counter1');
+  const counter2 = document.getElementById('counter2');
+  const decrementBtns = document.querySelectorAll('.decrement');
+  const incrementBtns = document.querySelectorAll('.increment');
 
-  // Load player names from localStorage if available
-  player1NameInput.value = localStorage.getItem('player1_name') || '';
-  player2NameInput.value = localStorage.getItem('player2_name') || '';
+  // ローカルストレージからデータを読み込む
+  let player1 = JSON.parse(localStorage.getItem('player1')) || { name: '', points: 0 };
+  let player2 = JSON.parse(localStorage.getItem('player2')) || { name: '', points: 0 };
+
+  // 保存されたデータがあれば、ゲーム画面を表示
+  if (player1.name && player2.name) {
+      showGameScreen();
+  } else {
+      nameInputScreen.style.display = 'block';
+  }
 
   playerForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      const player1Name = player1NameInput.value;
-      const player2Name = player2NameInput.value;
+      player1.name = player1Input.value.trim();
+      player2.name = player2Input.value.trim();
       
-      // Save player names to localStorage
-      localStorage.setItem('player1_name', player1Name);
-      localStorage.setItem('player2_name', player2Name);
-
-      player1Display.textContent = player1Name;
-      player2Display.textContent = player2Name;
-      
-      openingScreen.style.display = 'none';
-      gameScreen.style.display = 'block';
-      
-      initializeCounters();
+      if (player1.name && player2.name) {
+          saveToLocalStorage();
+          showGameScreen();
+      }
   });
 
-  function initializeCounters() {
-      const counters = document.querySelectorAll('.counter');
-      const decrementBtns = document.querySelectorAll('.decrement');
-      const incrementBtns = document.querySelectorAll('.increment');
-
-      counters.forEach((counter, index) => {
-          const storageKey = `player${index + 1}_count`;
-          let count = parseInt(localStorage.getItem(storageKey)) || 0;
-          counter.textContent = count;
-
-          decrementBtns[index].addEventListener('click', function() {
-              if (count > 0) {
-                  count--;
-                  updateCounter(counter, storageKey, count);
-              }
-          });
-
-          incrementBtns[index].addEventListener('click', function() {
-              count++;
-              updateCounter(counter, storageKey, count);
-          });
-      });
-  }
-
-  function updateCounter(counterElement, storageKey, count) {
-      counterElement.textContent = count;
-      localStorage.setItem(storageKey, count.toString());
-  }
-
-  // Initialize game screen if player names are already set
-  if (localStorage.getItem('player1_name') && localStorage.getItem('player2_name')) {
-      player1Display.textContent = localStorage.getItem('player1_name');
-      player2Display.textContent = localStorage.getItem('player2_name');
-      openingScreen.style.display = 'none';
+  function showGameScreen() {
+      player1Name.textContent = player1.name;
+      player2Name.textContent = player2.name;
+      counter1.textContent = player1.points;
+      counter2.textContent = player2.points;
+      nameInputScreen.style.display = 'none';
       gameScreen.style.display = 'block';
-      initializeCounters();
   }
+
+  function updateCounter(playerObj, counter) {
+      counter.textContent = playerObj.points;
+      saveToLocalStorage();
+  }
+
+  function saveToLocalStorage() {
+      localStorage.setItem('player1', JSON.stringify(player1));
+      localStorage.setItem('player2', JSON.stringify(player2));
+  }
+
+  decrementBtns.forEach((btn, index) => {
+      btn.addEventListener('click', () => {
+          let playerObj = index === 0 ? player1 : player2;
+          let counterElement = index === 0 ? counter1 : counter2;
+          if (playerObj.points > 0) {
+              playerObj.points--;
+              updateCounter(playerObj, counterElement);
+          }
+      });
+  });
+
+  incrementBtns.forEach((btn, index) => {
+      btn.addEventListener('click', () => {
+          let playerObj = index === 0 ? player1 : player2;
+          let counterElement = index === 0 ? counter1 : counter2;
+          playerObj.points++;
+          updateCounter(playerObj, counterElement);
+      });
+  });
 });

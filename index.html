@@ -12,9 +12,17 @@
 <body>
     <h1 class="main-title">ポイントカウンター</h1>
     
-    <div class="container">
+    <div id="name-input-screen" class="container">
+        <form id="player-form">
+            <input type="text" id="player1-input" placeholder="プレイヤー1の名前" required>
+            <input type="text" id="player2-input" placeholder="プレイヤー2の名前" required>
+            <button type="submit" class="gradient-btn">開始</button>
+        </form>
+    </div>
+
+    <div id="game-screen" class="container" style="display: none;">
         <div class="player-container">
-            <h2 class="player-name" id="player1-name">はやと</h2>
+            <h2 class="player-name" id="player1-name"></h2>
             <div class="counter-container">
                 <button class="gradient-btn decrement">-</button>
                 <span class="counter" id="counter1">0</span>
@@ -23,7 +31,7 @@
         </div>
         <div class="divider"></div>
         <div class="player-container">
-            <h2 class="player-name" id="player2-name">りさ</h2>
+            <h2 class="player-name" id="player2-name"></h2>
             <div class="counter-container">
                 <button class="gradient-btn decrement">-</button>
                 <span class="counter" id="counter2">0</span>
