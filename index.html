@@ -2,17 +2,36 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ポイントあつめ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ポイントカウンター</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="manifest.json"> 
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
 </head>
 <body>
+    <h1 class="main-title">ポイントカウンター</h1>
+    
     <div class="container">
-        <button id="decrement">-</button>
-        <span id="counter">0</span>
-        <button id="increment">+</button>
+        <div class="player-container">
+            <h2 class="player-name" id="player1-name">はやと</h2>
+            <div class="counter-container">
+                <button class="gradient-btn decrement">-</button>
+                <span class="counter" id="counter1">0</span>
+                <button class="gradient-btn increment">+</button>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="player-container">
+            <h2 class="player-name" id="player2-name">りさ</h2>
+            <div class="counter-container">
+                <button class="gradient-btn decrement">-</button>
+                <span class="counter" id="counter2">0</span>
+                <button class="gradient-btn increment">+</button>
+            </div>
+        </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>

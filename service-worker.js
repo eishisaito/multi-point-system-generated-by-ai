@@ -1,38 +1,31 @@
-self.addEventListener('install', (event) => {
+const CACHE_NAME = 'point-counter-v1';
+const urlsToCache = [
+  '/multi-point-system-generated-by-ai/',
+  '/multi-point-system-generated-by-ai/index.html',
+  '/multi-point-system-generated-by-ai/styles.css',
+  '/multi-point-system-generated-by-ai/script.js',
+  '/multi-point-system-generated-by-ai/icon-192x192.png',
+  '/multi-point-system-generated-by-ai/icon-512x512.png'
+];
+
+self.addEventListener('install', function(event) {
   event.waitUntil(
-      caches.open('cache-v1').then((cache) => {
-          return cache.addAll([
-              '/point-system-generated-by-ai/', // この行を修正
-              '/point-system-generated-by-ai/index.html', // この行を修正
-              '/point-system-generated-by-ai/styles.css', // この行を修正
-              '/point-system-generated-by-ai/script.js', // この行を修正
-              '/point-system-generated-by-ai/manifest.json', // この行を修正
-              '/point-system-generated-by-ai/icon-192x192.png', // この行を修正
-              '/point-system-generated-by-ai/icon-512x512.png', // この行を修正
-          ]);
+    caches.open(CACHE_NAME)
+      .then(function(cache) {
+        return cache.addAll(urlsToCache);
       })
   );
 });
 
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', function(event) {
   event.respondWith(
-      caches.match(event.request).then((response) => {
-          return response || fetch(event.request);
-      })
-  );
-});
-
-self.addEventListener('activate', (event) => {
-  const cacheWhitelist = ['cache-v1'];
-  event.waitUntil(
-      caches.keys().then((cacheNames) => {
-          return Promise.all(
-              cacheNames.map((cacheName) => {
-                  if (cacheWhitelist.indexOf(cacheName) === -1) {
-                      return caches.delete(cacheName);
-                  }
-              })
-          );
-      })
+    caches.match(event.request)
+      .then(function(response) {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
+      }
+    )
   );
 });
